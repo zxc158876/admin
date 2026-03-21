@@ -23,6 +23,7 @@ const { t } = useI18n()
 const isEditing = computed(() => props.channelId !== null)
 const error = ref('')
 const showAdvanced = ref(false)
+const applyingChannelData = ref(false)
 const configJsonPlaceholder = '{ "key": "value" }'
 
 const form = reactive({
@@ -112,6 +113,15 @@ const tokenpayConfig = reactive({
   base_currency: 'CNY',
 })
 
+const okpayConfig = reactive({
+  gateway_url: 'https://api.okaypay.me/shop',
+  merchant_id: '',
+  merchant_token: '',
+  return_url: '',
+  callback_url: '',
+  display_name: '',
+})
+
 const epayChannelOptions = [
   { value: 'wechat', label: 'admin.paymentChannels.channelTypes.wechat' },
   { value: 'alipay', label: 'admin.paymentChannels.channelTypes.alipay' },
@@ -131,9 +141,15 @@ const epusdtChannelOptions = [
   { value: 'trx', label: 'admin.paymentChannels.channelTypes.trx' },
 ]
 
+const okpayChannelOptions = [
+  { value: 'usdt', label: 'admin.paymentChannels.channelTypes.usdt' },
+  { value: 'trx', label: 'admin.paymentChannels.channelTypes.trx' },
+]
+
 const channelOptions = [
   ...epayChannelOptions,
   ...officialChannelOptions,
+  ...okpayChannelOptions,
 ]
 
 const formChannelOptions = computed(() => {
@@ -145,6 +161,9 @@ const formChannelOptions = computed(() => {
   }
   if (form.provider_type === 'epusdt') {
     return epusdtChannelOptions
+  }
+  if (form.provider_type === 'okpay') {
+    return okpayChannelOptions
   }
   return channelOptions
 })
@@ -162,6 +181,12 @@ const interactionModeOptions = computed(() => {
     ]
   }
   if (form.provider_type === 'tokenpay') {
+    return [
+      { value: 'qr', label: 'admin.paymentChannels.interactionModes.qr' },
+      { value: 'redirect', label: 'admin.paymentChannels.interactionModes.redirect' },
+    ]
+  }
+  if (form.provider_type === 'okpay') {
     return [
       { value: 'qr', label: 'admin.paymentChannels.interactionModes.qr' },
       { value: 'redirect', label: 'admin.paymentChannels.interactionModes.redirect' },
@@ -277,6 +302,15 @@ const resetTokenpayConfig = () => {
   tokenpayConfig.base_currency = 'CNY'
 }
 
+const resetOkpayConfig = () => {
+  okpayConfig.gateway_url = 'https://api.okaypay.me/shop'
+  okpayConfig.merchant_id = ''
+  okpayConfig.merchant_token = ''
+  okpayConfig.return_url = 'https://yourdomain.com/pay'
+  okpayConfig.callback_url = 'https://api.yourdomain.com/api/v1/payments/callback'
+  okpayConfig.display_name = ''
+}
+
 const resetAllConfigs = () => {
   resetEpayConfig()
   resetPaypalConfig()
@@ -285,6 +319,7 @@ const resetAllConfigs = () => {
   resetWechatConfig()
   resetEpusdtConfig()
   resetTokenpayConfig()
+  resetOkpayConfig()
 }
 
 // --- Apply functions ---
@@ -366,6 +401,15 @@ const applyTokenpayConfig = (raw: Record<string, unknown>) => {
   tokenpayConfig.notify_url = String(raw.notify_url || '')
   tokenpayConfig.redirect_url = String(raw.redirect_url || '')
   tokenpayConfig.base_currency = String(raw.base_currency || 'CNY')
+}
+
+const applyOkpayConfig = (raw: Record<string, unknown>) => {
+  okpayConfig.gateway_url = String(raw.gateway_url || 'https://api.okaypay.me/shop')
+  okpayConfig.merchant_id = String(raw.merchant_id || '')
+  okpayConfig.merchant_token = String(raw.merchant_token || '')
+  okpayConfig.return_url = String(raw.return_url || '')
+  okpayConfig.callback_url = String(raw.callback_url || '')
+  okpayConfig.display_name = String(raw.display_name || '')
 }
 
 // --- Build functions ---
@@ -520,11 +564,36 @@ const buildTokenpayConfig = () => {
   return config
 }
 
+const buildOkpayConfig = () => {
+  const config: Record<string, unknown> = {}
+  const setIfNotEmpty = (key: string, value: string) => {
+    const trimmed = String(value || '').trim()
+    if (trimmed !== '') {
+      config[key] = trimmed
+    }
+  }
+  setIfNotEmpty('gateway_url', okpayConfig.gateway_url)
+  setIfNotEmpty('merchant_id', okpayConfig.merchant_id)
+  setIfNotEmpty('merchant_token', okpayConfig.merchant_token)
+  setIfNotEmpty('return_url', okpayConfig.return_url)
+  setIfNotEmpty('callback_url', okpayConfig.callback_url)
+  setIfNotEmpty('display_name', okpayConfig.display_name)
+  if (form.channel_type === 'usdt') {
+    config.coin = 'USDT'
+  } else if (form.channel_type === 'trx') {
+    config.coin = 'TRX'
+  }
+  return config
+}
+
 // --- Watchers for provider_type / channel_type ---
 
 watch(
   () => form.provider_type,
   (value) => {
+    if (applyingChannelData.value) {
+      return
+    }
     if (value === 'epay') {
       const allowed = epayChannelOptions.map((option) => option.value)
       if (!allowed.includes(form.channel_type)) {
@@ -540,6 +609,11 @@ watch(
       if (!allowed.includes(form.channel_type)) {
         form.channel_type = allowed[0] || 'usdt-trc20'
       }
+    } else if (value === 'okpay') {
+      const allowed = okpayChannelOptions.map((option) => option.value)
+      if (!allowed.includes(form.channel_type)) {
+        form.channel_type = allowed[0] || 'usdt'
+      }
     } else if (value === 'tokenpay') {
       form.channel_type = 'usdt'
     }
@@ -550,6 +624,9 @@ watch(
 watch(
   () => form.channel_type,
   () => {
+    if (applyingChannelData.value) {
+      return
+    }
     const allowed = interactionModeOptions.value.map((item) => item.value)
     if (!allowed.includes(form.interaction_mode)) {
       form.interaction_mode = pickDefaultInteractionMode()
@@ -566,6 +643,7 @@ watch(
     showAdvanced.value = false
     if (id === null) {
       // Create mode: reset form
+      applyingChannelData.value = true
       form.name = ''
       form.provider_type = 'epay'
       form.channel_type = 'alipay'
@@ -576,9 +654,11 @@ watch(
       form.is_active = true
       form.sort_order = 10
       resetAllConfigs()
+      applyingChannelData.value = false
     } else {
       // Edit mode: fetch channel details
       try {
+        applyingChannelData.value = true
         const response = await adminAPI.getPaymentChannel(id)
         const channel = response.data.data
         form.name = channel.name
@@ -598,11 +678,14 @@ watch(
           applyWechatConfig(channel.config_json)
           applyEpusdtConfig(channel.config_json)
           applyTokenpayConfig(channel.config_json)
+          applyOkpayConfig(channel.config_json)
         } else {
           resetAllConfigs()
         }
       } catch (err: any) {
         error.value = err?.message || t('admin.paymentChannels.errors.fetchFailed')
+      } finally {
+        applyingChannelData.value = false
       }
     }
   }
@@ -666,6 +749,11 @@ const handleSubmit = async () => {
       ...configJson,
       ...buildTokenpayConfig(),
     }
+  } else if (form.provider_type === 'okpay') {
+    configJson = {
+      ...configJson,
+      ...buildOkpayConfig(),
+    }
   }
 
   const payload = {
@@ -721,6 +809,7 @@ const closeModal = () => {
                 <SelectItem value="official">{{ t('admin.paymentChannels.providerTypes.official') }}</SelectItem>
                 <SelectItem value="epay">{{ t('admin.paymentChannels.providerTypes.epay') }}</SelectItem>
                 <SelectItem value="epusdt">{{ t('admin.paymentChannels.providerTypes.epusdt') }}</SelectItem>
+                <SelectItem value="okpay">{{ t('admin.paymentChannels.providerTypes.okpay') }}</SelectItem>
                 <SelectItem value="tokenpay">{{ t('admin.paymentChannels.providerTypes.tokenpay') }}</SelectItem>
               </SelectContent>
             </Select>
@@ -1040,6 +1129,37 @@ const closeModal = () => {
             </div>
           </div>
           <div class="mt-3 text-xs text-muted-foreground">{{ t('admin.paymentChannels.modal.tokenpayHint') }}</div>
+        </div>
+
+        <div v-if="form.provider_type === 'okpay'" class="min-w-0 rounded-xl border border-border bg-muted/20 p-4 overflow-hidden">
+          <div class="text-sm font-semibold text-foreground mb-3">{{ t('admin.paymentChannels.modal.okpaySection') }}</div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 [&>*]:min-w-0">
+            <div class="min-w-0 md:col-span-2">
+              <label class="block text-xs font-medium text-muted-foreground mb-1.5">{{ t('admin.paymentChannels.modal.okpayGatewayUrl') }}</label>
+              <Input v-model="okpayConfig.gateway_url" :placeholder="t('admin.paymentChannels.modal.okpayGatewayUrlPlaceholder')" />
+            </div>
+            <div class="min-w-0">
+              <label class="block text-xs font-medium text-muted-foreground mb-1.5">{{ t('admin.paymentChannels.modal.okpayMerchantId') }}</label>
+              <Input v-model="okpayConfig.merchant_id" :placeholder="t('admin.paymentChannels.modal.okpayMerchantIdPlaceholder')" />
+            </div>
+            <div class="min-w-0">
+              <label class="block text-xs font-medium text-muted-foreground mb-1.5">{{ t('admin.paymentChannels.modal.okpayMerchantToken') }}</label>
+              <Input v-model="okpayConfig.merchant_token" :placeholder="t('admin.paymentChannels.modal.okpayMerchantTokenPlaceholder')" />
+            </div>
+            <div class="min-w-0">
+              <label class="block text-xs font-medium text-muted-foreground mb-1.5">{{ t('admin.paymentChannels.modal.okpayCallbackUrl') }}</label>
+              <Input v-model="okpayConfig.callback_url" :placeholder="t('admin.paymentChannels.modal.okpayCallbackUrlPlaceholder')" />
+            </div>
+            <div class="min-w-0">
+              <label class="block text-xs font-medium text-muted-foreground mb-1.5">{{ t('admin.paymentChannels.modal.okpayReturnUrl') }}</label>
+              <Input v-model="okpayConfig.return_url" :placeholder="t('admin.paymentChannels.modal.okpayReturnUrlPlaceholder')" />
+            </div>
+            <div class="min-w-0 md:col-span-2">
+              <label class="block text-xs font-medium text-muted-foreground mb-1.5">{{ t('admin.paymentChannels.modal.okpayDisplayName') }}</label>
+              <Input v-model="okpayConfig.display_name" :placeholder="t('admin.paymentChannels.modal.okpayDisplayNamePlaceholder')" />
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-muted-foreground">{{ t('admin.paymentChannels.modal.okpayHint') }}</div>
         </div>
 
         <div>
