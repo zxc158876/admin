@@ -410,11 +410,11 @@ onBeforeUnmount(() => {
 @reference "../style.css";
 
 .rich-editor {
-  @apply border border-border rounded-xl overflow-hidden bg-background;
+  @apply border border-border rounded-xl bg-background;
 }
 
 .editor-toolbar {
-  @apply flex flex-nowrap items-center gap-1 overflow-x-auto p-1.5 border-b border-border bg-muted/40 sm:flex-wrap sm:p-2;
+  @apply flex flex-nowrap items-center gap-1 overflow-x-auto overflow-y-visible p-1.5 border-b border-border bg-muted/40 sm:flex-wrap sm:overflow-visible sm:p-2;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
@@ -441,7 +441,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.editor-content) {
-  @apply text-foreground;
+  @apply text-foreground overflow-hidden;
 }
 
 :deep(.ProseMirror) {
