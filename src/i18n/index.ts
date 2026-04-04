@@ -1440,6 +1440,7 @@ const messages = {
         searchPlaceholder: '搜索素材名称或文件名...',
         empty: '暂无素材',
         uploadNew: '上传素材',
+        uploadProgress: '上传中 ({current}/{total})',
         confirmDelete: '确认删除素材 "{name}"？',
         deleteWarning: '删除后，素材文件将被永久移除，已使用该素材的地方将无法正常显示。',
         filters: {
@@ -1465,6 +1466,7 @@ const messages = {
           deleteFailed: '删除失败：{message}',
           renameFailed: '重命名失败：{message}',
           uploadFailed: '上传失败：{message}',
+          uploadPartialFailed: '上传部分失败（{fail}/{total}）',
         },
       },
       mediaPicker: {
@@ -4442,6 +4444,7 @@ const messages = {
         searchPlaceholder: '搜尋素材名稱或檔案名稱...',
         empty: '暫無素材',
         uploadNew: '上傳素材',
+        uploadProgress: '上傳中 ({current}/{total})',
         confirmDelete: '確認刪除素材「{name}」？',
         deleteWarning: '刪除後，素材檔案將被永久移除，已使用該素材的地方將無法正常顯示。',
         filters: {
@@ -4467,6 +4470,7 @@ const messages = {
           deleteFailed: '刪除失敗：{message}',
           renameFailed: '重新命名失敗：{message}',
           uploadFailed: '上傳失敗：{message}',
+          uploadPartialFailed: '上傳部分失敗（{fail}/{total}）',
         },
       },
       mediaPicker: {
@@ -7444,6 +7448,7 @@ const messages = {
         searchPlaceholder: 'Search media name or filename...',
         empty: 'No media yet',
         uploadNew: 'Upload Media',
+        uploadProgress: 'Uploading ({current}/{total})',
         confirmDelete: 'Delete media "{name}"?',
         deleteWarning: 'After deletion, the media file will be permanently removed and places using it will no longer display properly.',
         filters: {
@@ -7469,6 +7474,7 @@ const messages = {
           deleteFailed: 'Delete failed: {message}',
           renameFailed: 'Rename failed: {message}',
           uploadFailed: 'Upload failed: {message}',
+          uploadPartialFailed: 'Upload partially failed ({fail}/{total})',
         },
       },
       mediaPicker: {
