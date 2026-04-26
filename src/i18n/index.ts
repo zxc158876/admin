@@ -47,8 +47,12 @@ const messages = {
       stats: {
         total: '全部',
         pending: '待处理',
-        failed: '失败/拒绝',
+        failed: '失败',
+        rejected: '已拒绝',
         fulfilled: '已交付',
+        other: '其他',
+        totalHint: '当前筛选条件（不含状态）下的总数',
+        otherHint: '其他中间状态合计：已接受/已提交/已取消/部分退款/已退款/已完成',
       },
       time: {
         justNow: '刚刚',
@@ -3207,8 +3211,12 @@ const messages = {
       stats: {
         total: '全部',
         pending: '待處理',
-        failed: '失敗/拒絕',
+        failed: '失敗',
+        rejected: '已拒絕',
         fulfilled: '已交付',
+        other: '其他',
+        totalHint: '當前篩選條件（不含狀態）下的總數',
+        otherHint: '其他中間狀態合計：已接受/已提交/已取消/部分退款/已退款/已完成',
       },
       time: {
         justNow: '剛剛',
@@ -6367,8 +6375,12 @@ const messages = {
       stats: {
         total: 'Total',
         pending: 'Pending',
-        failed: 'Failed/Rejected',
+        failed: 'Failed',
+        rejected: 'Rejected',
         fulfilled: 'Fulfilled',
+        other: 'Other',
+        totalHint: 'Total under current filters (excluding status)',
+        otherHint: 'Other intermediate statuses: accepted/submitted/canceled/partially refunded/refunded/completed',
       },
       time: {
         justNow: 'Just now',

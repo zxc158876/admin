@@ -411,6 +411,7 @@ export const adminAPI = {
   batchImportByCategory: (data: Record<string, unknown>) => api.post('/admin/product-mappings/batch-import-by-category', data),
   // Procurement Orders
   getProcurementOrders: (params?: Record<string, unknown>) => api.get('/admin/procurement-orders', { params }),
+  getProcurementOrderStats: (params?: Record<string, unknown>) => api.get('/admin/procurement-orders/stats', { params }),
   getProcurementOrder: (id: number) => api.get(`/admin/procurement-orders/${id}`),
   downloadProcurementUpstreamPayload: (id: number) => api.get(`/admin/procurement-orders/${id}/upstream-payload/download`, { blob: true }),
   retryProcurementOrder: (id: number) => api.post(`/admin/procurement-orders/${id}/retry`),
