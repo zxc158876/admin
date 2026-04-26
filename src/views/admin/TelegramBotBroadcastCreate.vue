@@ -13,8 +13,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { notifyError, notifySuccess } from '@/utils/notify'
 import { formatDate } from '@/utils/format'
-import { Loader2, Paperclip, Search, Send, Trash2, Users, ImageIcon } from 'lucide-vue-next'
+import { Loader2, Search, Send, Trash2, Users, ImageIcon } from 'lucide-vue-next'
 import MediaPicker from '@/components/admin/MediaPicker.vue'
+import FileInput from '@/components/FileInput.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -22,7 +23,6 @@ const router = useRouter()
 const submitting = ref(false)
 const uploading = ref(false)
 const loadingUsers = ref(false)
-const fileInput = ref<HTMLInputElement | null>(null)
 
 const form = reactive({
   title: '',
@@ -114,10 +114,6 @@ const toggleUser = (userID: number, v: boolean | 'indeterminate') => {
 const mediaPickerRef = ref<InstanceType<typeof MediaPicker> | null>(null)
 const mediaPickerValue = ref('')
 
-const openFilePicker = () => {
-  fileInput.value?.click()
-}
-
 const handleMediaSelected = (value: string | string[]) => {
   const path = Array.isArray(value) ? value[0] : value
   if (path) {
@@ -132,11 +128,10 @@ const handleMediaSelected = (value: string | string[]) => {
 const clearAttachment = () => {
   form.attachment_url = ''
   form.attachment_name = ''
-  if (fileInput.value) fileInput.value.value = ''
 }
 
-const handleAttachmentChange = async (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
+const handleAttachmentChange = async (files: FileList | null) => {
+  const file = files?.[0]
   if (!file) return
 
   uploading.value = true
@@ -154,7 +149,6 @@ const handleAttachmentChange = async (event: Event) => {
     }
   } finally {
     uploading.value = false
-    if (fileInput.value) fileInput.value.value = ''
   }
 }
 
@@ -267,7 +261,6 @@ onMounted(() => {
         <div class="space-y-2">
           <Label>{{ t('telegramBot.broadcasts.fieldAttachment') }}</Label>
           <div class="rounded-lg border border-dashed p-4">
-            <input ref="fileInput" type="file" class="hidden" @change="handleAttachmentChange" />
             <div v-if="form.attachment_url" class="flex flex-wrap items-center justify-between gap-3">
               <div class="space-y-1">
                 <div class="font-medium">{{ form.attachment_name || t('telegramBot.broadcasts.attachmentUploaded') }}</div>
@@ -279,10 +272,11 @@ onMounted(() => {
               </Button>
             </div>
             <div v-else class="flex flex-wrap items-center gap-3">
-              <Button variant="outline" type="button" :disabled="uploading" @click="openFilePicker">
-                <Paperclip class="h-4 w-4 mr-2" />
-                {{ uploading ? t('admin.common.loading') : t('telegramBot.broadcasts.uploadAttachment') }}
-              </Button>
+              <FileInput
+                :button-text="uploading ? t('admin.common.loading') : t('telegramBot.broadcasts.uploadAttachment')"
+                :disabled="uploading"
+                @change="handleAttachmentChange"
+              />
               <Button variant="outline" type="button" @click="mediaPickerRef?.openPicker()">
                 <ImageIcon class="h-4 w-4 mr-2" />
                 {{ t('admin.mediaPicker.selectFromLibrary') }}
