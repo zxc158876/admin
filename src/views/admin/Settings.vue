@@ -5,6 +5,8 @@ import { adminAPI } from '@/api/admin'
 import RichEditor from '@/components/RichEditor.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { notifyError, notifySuccess } from '@/utils/notify'
 import SettingsSMTPTab from './components/SettingsSMTPTab.vue'
@@ -731,16 +733,16 @@ onMounted(() => {
         </div>
         <div class="space-y-4 p-6">
           <div class="flex flex-col gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 sm:flex-row sm:items-center">
-            <input id="registration-enabled" v-model="registrationForm.registration_enabled" type="checkbox" class="h-4 w-4 accent-primary" />
+            <Switch id="registration-enabled" v-model="registrationForm.registration_enabled" />
             <div>
-              <label for="registration-enabled" class="text-sm font-medium">{{ t('admin.settings.registration.registrationEnabled') }}</label>
+              <Label for="registration-enabled" class="text-sm font-medium">{{ t('admin.settings.registration.registrationEnabled') }}</Label>
               <p class="text-xs text-muted-foreground">{{ t('admin.settings.registration.registrationEnabledDesc') }}</p>
             </div>
           </div>
           <div class="flex flex-col gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 sm:flex-row sm:items-center">
-            <input id="email-verification-enabled" v-model="registrationForm.email_verification_enabled" type="checkbox" class="h-4 w-4 accent-primary" />
+            <Switch id="email-verification-enabled" v-model="registrationForm.email_verification_enabled" />
             <div>
-              <label for="email-verification-enabled" class="text-sm font-medium">{{ t('admin.settings.registration.emailVerificationEnabled') }}</label>
+              <Label for="email-verification-enabled" class="text-sm font-medium">{{ t('admin.settings.registration.emailVerificationEnabled') }}</Label>
               <p class="text-xs text-muted-foreground">{{ t('admin.settings.registration.emailVerificationEnabledDesc') }}</p>
             </div>
           </div>
@@ -924,7 +926,7 @@ onMounted(() => {
             </div>
 
             <label class="flex items-center gap-2 text-sm text-muted-foreground">
-              <input v-model="script.enabled" type="checkbox" class="h-4 w-4 accent-primary" />
+              <Switch v-model="script.enabled" />
               {{ t('admin.settings.scripts.enabled') }}
             </label>
 
@@ -1146,8 +1148,8 @@ onMounted(() => {
 
         <div class="space-y-6 p-6">
           <div class="flex flex-col gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 sm:flex-row sm:items-center">
-            <input id="telegram-auth-enabled" v-model="telegramForm.enabled" type="checkbox" class="h-4 w-4 accent-primary" />
-            <label for="telegram-auth-enabled" class="text-sm font-medium">{{ t('admin.settings.telegram.enabled') }}</label>
+            <Switch id="telegram-auth-enabled" v-model="telegramForm.enabled" />
+            <Label for="telegram-auth-enabled" class="text-sm font-medium">{{ t('admin.settings.telegram.enabled') }}</Label>
           </div>
 
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">

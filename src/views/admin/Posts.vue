@@ -11,6 +11,7 @@ import { getImageUrl } from '@/utils/image'
 import { formatDate, getLocalizedText } from '@/utils/format'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogHeader, DialogScrollContent, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -550,7 +551,7 @@ watch(
             </div>
 
             <div class="col-span-1 flex items-center gap-2 border-t border-border pt-4 md:col-span-2">
-              <input v-model="form.is_published" type="checkbox" class="h-4 w-4 accent-primary" />
+              <Switch v-model="form.is_published" />
               <span class="text-sm text-muted-foreground">{{ t('admin.posts.form.publishNow') }}</span>
             </div>
           </div>

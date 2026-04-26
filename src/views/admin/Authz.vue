@@ -5,6 +5,7 @@ import { adminAPI, type AdminAuthzAdmin, type AdminAuthzPolicy, type AdminPermis
 import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { notifyError, notifySuccess } from '@/utils/notify'
 import { confirmAction } from '@/utils/confirm'
@@ -868,7 +869,7 @@ onMounted(async () => {
             />
           </div>
           <label class="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
-            <input v-model="adminForm.isSuper" type="checkbox" class="h-4 w-4">
+            <Switch v-model="adminForm.isSuper" />
             <span>{{ text.adminIsSuper }}</span>
           </label>
           <Button class="w-full" :disabled="savingAdminForm" @click="handleSubmitAdminForm">

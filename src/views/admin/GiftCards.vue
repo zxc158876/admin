@@ -11,6 +11,7 @@ import {
 import type { AdminGiftCard, AdminGiftCardBatch } from '@/api/types'
 import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogHeader, DialogScrollContent, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -530,7 +531,7 @@ onMounted(() => {
         <TableHeader class="border-b border-border bg-muted/40 text-xs uppercase text-muted-foreground">
           <TableRow>
             <TableHead class="min-w-[56px] px-4 py-3">
-              <input type="checkbox" class="h-4 w-4 accent-primary" :checked="allCurrentPageSelected" @change="toggleSelectAllCards" />
+              <Checkbox :model-value="allCurrentPageSelected" @update:model-value="toggleSelectAllCards" />
             </TableHead>
             <TableHead class="min-w-[80px] px-4 py-3">{{ t('admin.giftCards.table.id') }}</TableHead>
             <TableHead class="min-w-[80px] px-4 py-3">{{ t('admin.giftCards.table.name') }}</TableHead>

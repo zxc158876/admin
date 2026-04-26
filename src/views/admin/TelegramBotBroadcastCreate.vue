@@ -6,6 +6,7 @@ import { adminAPI } from '@/api/admin'
 import type { AdminTelegramBroadcastUser } from '@/api/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -338,7 +339,7 @@ onMounted(() => {
             <TableHeader>
               <TableRow>
                 <TableHead class="w-12">
-                  <input type="checkbox" :checked="allPageSelected" @change="toggleSelectAll" />
+                  <Checkbox :model-value="allPageSelected" @update:model-value="toggleSelectAll" />
                 </TableHead>
                 <TableHead class="min-w-[180px]">{{ t('telegramBot.broadcasts.userDisplayName') }}</TableHead>
                 <TableHead class="min-w-[180px]">{{ t('telegramBot.broadcasts.userTelegramUsername') }}</TableHead>
