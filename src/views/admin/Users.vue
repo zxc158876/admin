@@ -10,6 +10,7 @@ import { formatDate, formatMoney, getLocalizedText } from '@/utils/format'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { toggleArrayMember } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogHeader, DialogScrollContent, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -150,13 +151,8 @@ const toggleSelectAll = () => {
   selectedIds.value = users.value.map((item) => item.id)
 }
 
-const toggleUserSelected = (id: number, v: boolean) => {
-  if (v) {
-    if (!selectedIds.value.includes(id)) selectedIds.value.push(id)
-  } else {
-    const i = selectedIds.value.indexOf(id)
-    if (i >= 0) selectedIds.value.splice(i, 1)
-  }
+const toggleUserSelected = (id: number, v: boolean | 'indeterminate') => {
+  toggleArrayMember(selectedIds, id, v)
 }
 
 const batchUpdateStatus = async (status: string) => {
@@ -348,7 +344,7 @@ onMounted(() => {
           </TableRow>
           <TableRow v-for="user in users" :key="user.id" class="hover:bg-muted/30">
             <TableCell class="px-6 py-4">
-              <Checkbox :model-value="selectedIds.includes(user.id)" @update:model-value="(v) => toggleUserSelected(user.id, v === true)" />
+              <Checkbox :model-value="selectedIds.includes(user.id)" @update:model-value="(v) => toggleUserSelected(user.id, v)" />
             </TableCell>
             <TableCell class="px-6 py-4">
               <IdCell :value="user.id" />

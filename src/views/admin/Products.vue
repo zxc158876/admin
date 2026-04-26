@@ -477,7 +477,7 @@ watch(
         <TableHeader class="border-b border-border bg-muted/40 text-xs uppercase text-muted-foreground">
           <TableRow>
             <TableHead class="w-10 px-3 py-3">
-              <Checkbox :model-value="allSelected" @update:model-value="toggleSelectAll" />
+              <Checkbox :model-value="allSelected ? true : (selectedIds.size > 0 ? 'indeterminate' : false)" @update:model-value="toggleSelectAll" />
             </TableHead>
             <TableHead class="px-6 py-3">{{ t('admin.products.table.id') }}</TableHead>
             <TableHead class="px-6 py-3 min-w-[320px]">{{ t('admin.products.table.name') }}</TableHead>

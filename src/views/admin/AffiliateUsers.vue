@@ -8,6 +8,7 @@ import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { toggleArrayMember } from '@/lib/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import TableSkeleton from '@/components/TableSkeleton.vue'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -141,12 +142,7 @@ const toggleSelectAll = () => {
 }
 
 const toggleAffiliateUserSelected = (id: number, v: boolean | 'indeterminate') => {
-  if (v === true) {
-    if (!selectedIds.value.includes(id)) selectedIds.value.push(id)
-  } else {
-    const i = selectedIds.value.indexOf(id)
-    if (i >= 0) selectedIds.value.splice(i, 1)
-  }
+  toggleArrayMember(selectedIds, id, v)
 }
 
 const toggleProfileStatus = async (row: Record<string, unknown>) => {

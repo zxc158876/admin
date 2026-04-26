@@ -101,9 +101,9 @@ const toggleSelectAll = () => {
   selectedUserIds.value = Array.from(next)
 }
 
-const toggleUser = (userID: number, checked: boolean) => {
+const toggleUser = (userID: number, v: boolean | 'indeterminate') => {
   const next = new Set(selectedUserIds.value)
-  if (checked) {
+  if (v === true) {
     next.add(userID)
   } else {
     next.delete(userID)
@@ -361,10 +361,9 @@ onMounted(() => {
               </TableRow>
               <TableRow v-for="item in users" :key="item.user_id">
                 <TableCell>
-                  <input
-                    type="checkbox"
-                    :checked="selectedUserIds.includes(item.user_id)"
-                    @change="toggleUser(item.user_id, ($event.target as HTMLInputElement).checked)"
+                  <Checkbox
+                    :model-value="selectedUserIds.includes(item.user_id)"
+                    @update:model-value="(v) => toggleUser(item.user_id, v)"
                   />
                 </TableCell>
                 <TableCell class="min-w-[180px]">

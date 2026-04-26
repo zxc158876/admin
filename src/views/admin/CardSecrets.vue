@@ -10,6 +10,7 @@ import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { toggleArrayMember } from '@/lib/utils'
 import ListPagination from '@/components/ListPagination.vue'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import TableSkeleton from '@/components/TableSkeleton.vue'
@@ -272,13 +273,8 @@ const toggleSelectAllSecrets = () => {
     .filter((item: number) => Number.isFinite(item) && item > 0)
 }
 
-const toggleSecretSelected = (id: number, v: boolean) => {
-  if (v) {
-    if (!selectedSecretIds.value.includes(id)) selectedSecretIds.value.push(id)
-  } else {
-    const i = selectedSecretIds.value.indexOf(id)
-    if (i >= 0) selectedSecretIds.value.splice(i, 1)
-  }
+const toggleSecretSelected = (id: number, v: boolean | 'indeterminate') => {
+  toggleArrayMember(selectedSecretIds, id, v)
 }
 
 const clearBatchFilter = () => {
@@ -1105,7 +1101,7 @@ onMounted(async () => {
               </TableRow>
               <TableRow v-for="secret in cardSecrets" :key="secret.id" class="hover:bg-muted/30">
                 <TableCell class="px-4 py-3">
-                  <Checkbox :model-value="selectedSecretIds.includes(secret.id)" @update:model-value="(v) => toggleSecretSelected(secret.id, v === true)" />
+                  <Checkbox :model-value="selectedSecretIds.includes(secret.id)" @update:model-value="(v) => toggleSecretSelected(secret.id, v)" />
                 </TableCell>
                 <TableCell class="px-4 py-3">
                   <IdCell :value="secret.id" />

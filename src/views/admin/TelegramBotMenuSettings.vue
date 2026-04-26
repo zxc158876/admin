@@ -88,7 +88,7 @@ onMounted(() => {
         >
           <div class="space-y-3">
             <div class="flex items-center gap-2">
-              <Switch v-model="item.enabled" />
+              <Switch :id="`menu-enabled-${index}`" v-model="item.enabled" />
               <Input
                 v-model="item.key"
                 :placeholder="t('telegramBot.settings.menuKeyPlaceholder')"

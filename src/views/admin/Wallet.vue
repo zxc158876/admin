@@ -95,12 +95,12 @@ onMounted(() => {
           <Switch id="wallet-only-payment" v-model="form.wallet_only_payment" />
         </div>
         <div class="border-t border-border pt-4">
-          <label class="block text-xs font-medium text-muted-foreground mb-2">{{ t('admin.settings.wallet.rechargeChannels') }}</label>
+          <Label class="block text-xs font-medium text-muted-foreground mb-2">{{ t('admin.settings.wallet.rechargeChannels') }}</Label>
           <div v-if="channels.length > 0" class="flex flex-wrap gap-2">
-            <label v-for="ch in channels" :key="ch.id" class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs cursor-pointer select-none" :class="form.recharge_channel_ids.includes(ch.id) ? 'bg-primary/10 border-primary text-primary' : 'text-muted-foreground hover:border-primary/40'">
+            <Label v-for="ch in channels" :key="ch.id" class="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs cursor-pointer select-none" :class="form.recharge_channel_ids.includes(ch.id) ? 'bg-primary/10 border-primary text-primary' : 'text-muted-foreground hover:border-primary/40'">
               <Checkbox :model-value="form.recharge_channel_ids.includes(ch.id)" @update:model-value="() => toggleChannel(ch.id)" />
               {{ ch.name }}
-            </label>
+            </Label>
           </div>
           <p v-else class="text-xs text-muted-foreground">{{ t('admin.settings.wallet.noChannels') }}</p>
           <p class="mt-1 text-xs text-muted-foreground">{{ t('admin.settings.wallet.rechargeChannelsTip') }}</p>

@@ -13,6 +13,7 @@ import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { toggleArrayMember } from '@/lib/utils'
 import { Dialog, DialogHeader, DialogScrollContent, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import TableSkeleton from '@/components/TableSkeleton.vue'
@@ -183,11 +184,7 @@ const toggleSelectAllCards = () => {
 const onRowSelectChange = (rawID: number | string, v: boolean | 'indeterminate') => {
   const id = Number(rawID)
   if (!Number.isFinite(id) || id <= 0) return
-  if (v === true) {
-    selectedCardIDs.value = Array.from(new Set([...selectedCardIDs.value, Math.floor(id)]))
-    return
-  }
-  selectedCardIDs.value = selectedCardIDs.value.filter((item) => item !== Math.floor(id))
+  toggleArrayMember(selectedCardIDs, Math.floor(id), v)
 }
 
 const fetchGiftCards = async (page = 1) => {

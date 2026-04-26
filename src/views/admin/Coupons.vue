@@ -9,6 +9,7 @@ import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Dialog, DialogHeader, DialogScrollContent, DialogTitle } from '@/components/ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -292,12 +293,11 @@ const handleSearchScopeProducts = async () => {
   await loadProductOptions(scopeFilterKeyword.value)
 }
 
-const toggleScopeProduct = (rawProductID: number | string, v?: boolean | 'indeterminate') => {
+const toggleScopeProduct = (rawProductID: number | string, v: boolean | 'indeterminate') => {
   const productID = Number(rawProductID)
   if (!Number.isFinite(productID) || productID <= 0) return
   const normalizedID = Math.floor(productID)
-  const shouldAdd = v === undefined ? !selectedScopeIDs.value.includes(normalizedID) : v === true
-  if (shouldAdd) {
+  if (v === true) {
     selectedScopeIDs.value = Array.from(new Set([...selectedScopeIDs.value, normalizedID])).sort((a, b) => a - b)
   } else {
     selectedScopeIDs.value = selectedScopeIDs.value.filter((id) => id !== normalizedID)
@@ -789,7 +789,7 @@ watch(
                   <div v-else-if="productOptions.length === 0" class="px-3 py-3 text-xs text-muted-foreground">
                     {{ t('admin.coupons.modal.scopeEmpty') }}
                   </div>
-                  <label
+                  <Label
                     v-for="product in productOptions"
                     :key="`scope-product-${product.id}`"
                     class="flex cursor-pointer items-center gap-2 border-b border-border/60 px-3 py-2 text-sm last:border-b-0 hover:bg-muted/30"
@@ -799,7 +799,7 @@ watch(
                       @update:model-value="(v) => toggleScopeProduct(product.id, v)"
                     />
                     <span class="truncate">{{ buildProductLabel(product) }}</span>
-                  </label>
+                  </Label>
                 </div>
               </div>
             </div>

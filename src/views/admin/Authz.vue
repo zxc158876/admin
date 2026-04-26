@@ -4,7 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { adminAPI, type AdminAuthzAdmin, type AdminAuthzPolicy, type AdminPermissionCatalogItem } from '@/api/admin'
 import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { notifyError, notifySuccess } from '@/utils/notify'
@@ -509,9 +511,9 @@ const fetchSelectedAdminRoles = async () => {
 
 const isRoleChecked = (role: string) => selectedAdminRoles.value.includes(role)
 
-const toggleAdminRole = (role: string, checked: boolean) => {
+const toggleAdminRole = (role: string, v: boolean | 'indeterminate') => {
   const next = new Set(selectedAdminRoles.value)
-  if (checked) {
+  if (v === true) {
     next.add(role)
   } else {
     next.delete(role)
@@ -868,10 +870,10 @@ onMounted(async () => {
               :placeholder="adminFormMode === 'create' ? text.adminPasswordPlaceholderCreate : text.adminPasswordPlaceholderEdit"
             />
           </div>
-          <label class="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm">
+          <Label class="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm cursor-pointer">
             <Switch v-model="adminForm.isSuper" />
             <span>{{ text.adminIsSuper }}</span>
-          </label>
+          </Label>
           <Button class="w-full" :disabled="savingAdminForm" @click="handleSubmitAdminForm">
             {{ savingAdminForm ? text.loading : adminSubmitLabel }}
           </Button>
@@ -1038,19 +1040,17 @@ onMounted(async () => {
         <div class="space-y-3">
           <div class="text-sm text-muted-foreground">{{ text.rolesLabel }}</div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            <label
+            <Label
               v-for="role in normalizedRoleOptions"
               :key="`admin-role-${role}`"
-              class="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              class="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm cursor-pointer"
             >
-              <input
-                type="checkbox"
-                class="h-4 w-4"
-                :checked="isRoleChecked(role)"
-                @change="toggleAdminRole(role, ($event.target as HTMLInputElement).checked)"
-              >
+              <Checkbox
+                :model-value="isRoleChecked(role)"
+                @update:model-value="(v) => toggleAdminRole(role, v)"
+              />
               <span>{{ stripRolePrefix(role) }}</span>
-            </label>
+            </Label>
           </div>
           <div class="flex items-center justify-end">
             <Button :disabled="savingAdminRoles" @click="handleSaveAdminRoles">

@@ -102,7 +102,7 @@ onMounted(() => {
           class="space-y-3 rounded-lg border border-border p-4"
         >
           <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <Switch v-model="item.enabled" />
+            <Switch :id="`help-enabled-${index}`" v-model="item.enabled" />
             <Input
               v-model="item.key"
               :placeholder="t('telegramBot.settings.helpKeyPlaceholder')"

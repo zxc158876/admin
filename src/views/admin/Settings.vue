@@ -925,10 +925,10 @@ onMounted(() => {
               </div>
             </div>
 
-            <label class="flex items-center gap-2 text-sm text-muted-foreground">
+            <Label class="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
               <Switch v-model="script.enabled" />
               {{ t('admin.settings.scripts.enabled') }}
-            </label>
+            </Label>
 
             <div class="space-y-2">
               <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.scripts.code') }}</label>
