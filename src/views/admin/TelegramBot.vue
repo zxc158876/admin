@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/utils/format'
-import { Bot, ExternalLink, Wifi, WifiOff, RefreshCw, Send, KeyRound } from 'lucide-vue-next'
+import { Bot, ExternalLink, Wifi, WifiOff, RefreshCw, Send, KeyRound, ShieldAlert } from 'lucide-vue-next'
 
 const LICENSE_PURCHASE_URL = 'https://dujiao-next.com/services/telegram-bot'
 
@@ -96,9 +96,13 @@ onMounted(() => {
           <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
             <KeyRound class="h-5 w-5" />
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">{{ t('telegramBot.licensePurchase.title') }}</p>
             <p class="text-sm text-amber-800/80 dark:text-amber-200/80">{{ t('telegramBot.licensePurchase.desc') }}</p>
+            <p class="flex items-start gap-1.5 text-xs text-red-700 dark:text-red-300">
+              <ShieldAlert class="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>{{ t('telegramBot.licensePurchase.securityNote') }}</span>
+            </p>
           </div>
         </div>
         <Button as-child size="sm" class="w-full bg-amber-600 hover:bg-amber-700 sm:w-auto">
