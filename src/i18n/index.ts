@@ -3037,6 +3037,11 @@ const messages = {
         refreshStatus: '刷新状态',
         createBroadcast: '新建群发',
       },
+      licensePurchase: {
+        title: '需要授权才能使用 Telegram Bot',
+        desc: 'Telegram Bot 模块需要购买授权后方可启用。授权一次性付费、终身可用，并支持代搭建服务。点击下方链接查看授权方案与购买流程。',
+        action: '查看授权方案',
+      },
       settings: {
         title: '基础设置',
         subtitle: '配置 Telegram Bot 的基础展示信息与欢迎消息',
@@ -6321,6 +6326,11 @@ const messages = {
         refreshStatus: '刷新狀態',
         createBroadcast: '新建群發',
       },
+      licensePurchase: {
+        title: '需要授權才能使用 Telegram Bot',
+        desc: 'Telegram Bot 模組需要購買授權後方可啟用。授權一次性付費、終身可用，並提供代搭建服務。點擊下方連結查看授權方案與購買流程。',
+        action: '查看授權方案',
+      },
       settings: {
         title: '基礎設定',
         subtitle: '配置 Telegram Bot 的基礎展示資訊與歡迎訊息',
@@ -9604,6 +9614,11 @@ const messages = {
         quickActions: 'Quick Actions',
         refreshStatus: 'Refresh Status',
         createBroadcast: 'New Broadcast',
+      },
+      licensePurchase: {
+        title: 'License Required to Use Telegram Bot',
+        desc: 'The Telegram Bot module requires a paid license to activate. One-time purchase with lifetime updates and optional managed deployment service. Click below to view pricing and purchase options.',
+        action: 'View License Options',
       },
       settings: {
         title: 'Basic Settings',
