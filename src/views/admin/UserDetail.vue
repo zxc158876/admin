@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import ListPagination from '@/components/ListPagination.vue'
 import type { AcceptableValue } from 'reka-ui'
 import {
   orderStatusClass as orderStatusClassMap,
@@ -51,23 +52,21 @@ const tabs = computed<Array<{ key: 'orders' | 'payments' | 'coupons' | 'wallet';
 const orders = ref<AdminOrder[]>([])
 const ordersLoading = ref(false)
 const ordersPagination = ref({ page: 1, page_size: 20, total: 0, total_page: 1 })
-const ordersJumpPage = ref('')
 
 const payments = ref<AdminPayment[]>([])
 const paymentsLoading = ref(false)
 const paymentsPagination = ref({ page: 1, page_size: 20, total: 0, total_page: 1 })
-const paymentsJumpPage = ref('')
 
 const couponUsages = ref<UserDetailCouponUsage[]>([])
 const couponsLoading = ref(false)
 const couponsPagination = ref({ page: 1, page_size: 20, total: 0, total_page: 1 })
-const couponsJumpPage = ref('')
 
 const walletAccount = ref<AdminWalletAccount | null>(null)
 const walletTransactions = ref<AdminWalletTransaction[]>([])
 const walletLoading = ref(false)
 const walletPagination = ref({ page: 1, page_size: 20, total: 0, total_page: 1 })
-const walletJumpPage = ref('')
+
+const pageSizeOptions = [10, 20, 50, 100]
 const walletSubmitting = ref(false)
 const walletError = ref('')
 const walletSuccess = ref('')
@@ -214,40 +213,48 @@ const loadWalletData = async (page = walletPagination.value.page) => {
   }
 }
 
-const jumpOrdersPage = () => {
-  if (!ordersJumpPage.value) return
-  const raw = Number(ordersJumpPage.value)
-  if (Number.isNaN(raw)) return
-  const target = Math.min(Math.max(Math.floor(raw), 1), ordersPagination.value.total_page)
-  if (target === ordersPagination.value.page) return
-  fetchOrders(target)
+const changeOrdersPage = (page: number) => {
+  if (page < 1 || page > ordersPagination.value.total_page) return
+  fetchOrders(page)
 }
 
-const jumpPaymentsPage = () => {
-  if (!paymentsJumpPage.value) return
-  const raw = Number(paymentsJumpPage.value)
-  if (Number.isNaN(raw)) return
-  const target = Math.min(Math.max(Math.floor(raw), 1), paymentsPagination.value.total_page)
-  if (target === paymentsPagination.value.page) return
-  fetchPayments(target)
+const changeOrdersPageSize = (size: number) => {
+  if (size === ordersPagination.value.page_size) return
+  ordersPagination.value.page_size = size
+  fetchOrders(1)
 }
 
-const jumpCouponsPage = () => {
-  if (!couponsJumpPage.value) return
-  const raw = Number(couponsJumpPage.value)
-  if (Number.isNaN(raw)) return
-  const target = Math.min(Math.max(Math.floor(raw), 1), couponsPagination.value.total_page)
-  if (target === couponsPagination.value.page) return
-  fetchCoupons(target)
+const changePaymentsPage = (page: number) => {
+  if (page < 1 || page > paymentsPagination.value.total_page) return
+  fetchPayments(page)
 }
 
-const jumpWalletPage = () => {
-  if (!walletJumpPage.value) return
-  const raw = Number(walletJumpPage.value)
-  if (Number.isNaN(raw)) return
-  const target = Math.min(Math.max(Math.floor(raw), 1), walletPagination.value.total_page)
-  if (target === walletPagination.value.page) return
-  fetchWalletTransactions(target)
+const changePaymentsPageSize = (size: number) => {
+  if (size === paymentsPagination.value.page_size) return
+  paymentsPagination.value.page_size = size
+  fetchPayments(1)
+}
+
+const changeCouponsPage = (page: number) => {
+  if (page < 1 || page > couponsPagination.value.total_page) return
+  fetchCoupons(page)
+}
+
+const changeCouponsPageSize = (size: number) => {
+  if (size === couponsPagination.value.page_size) return
+  couponsPagination.value.page_size = size
+  fetchCoupons(1)
+}
+
+const changeWalletPage = (page: number) => {
+  if (page < 1 || page > walletPagination.value.total_page) return
+  fetchWalletTransactions(page)
+}
+
+const changeWalletPageSize = (size: number) => {
+  if (size === walletPagination.value.page_size) return
+  walletPagination.value.page_size = size
+  fetchWalletTransactions(1)
 }
 
 const changeTab = (tab: 'orders' | 'payments' | 'coupons' | 'wallet') => {
@@ -640,51 +647,15 @@ watch(
           </TableRow>
         </TableBody>
       </Table>
-      <div
-        v-if="ordersPagination.total_page > 1"
-        class="flex flex-wrap items-center justify-between gap-3 border-t border-border px-6 py-4"
-      >
-        <div class="flex items-center gap-3">
-          <span class="text-xs text-muted-foreground">
-            {{ t('admin.common.pageInfo', { total: ordersPagination.total, page: ordersPagination.page, totalPage: ordersPagination.total_page }) }}
-          </span>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-2">
-            <Input
-              v-model="ordersJumpPage"
-              type="number"
-              min="1"
-              :max="ordersPagination.total_page"
-              class="h-8 w-20"
-              :placeholder="t('admin.common.jumpPlaceholder')"
-            />
-            <Button variant="outline" size="sm" class="h-8" @click="jumpOrdersPage">
-              {{ t('admin.common.jumpTo') }}
-            </Button>
-          </div>
-          <div class="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              class="h-8"
-              :disabled="ordersPagination.page <= 1"
-              @click="fetchOrders(ordersPagination.page - 1)"
-            >
-              {{ t('admin.common.prevPage') }}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              class="h-8"
-              :disabled="ordersPagination.page >= ordersPagination.total_page"
-              @click="fetchOrders(ordersPagination.page + 1)"
-            >
-              {{ t('admin.common.nextPage') }}
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ListPagination
+        :page="ordersPagination.page"
+        :total-page="ordersPagination.total_page"
+        :total="ordersPagination.total"
+        :page-size="ordersPagination.page_size"
+        :page-size-options="pageSizeOptions"
+        @change-page="changeOrdersPage"
+        @change-page-size="changeOrdersPageSize"
+      />
     </div>
 
     <div v-if="activeTab === 'payments'" class="rounded-xl border border-border bg-card overflow-x-auto">
@@ -735,51 +706,15 @@ watch(
           </TableRow>
         </TableBody>
       </Table>
-      <div
-        v-if="paymentsPagination.total_page > 1"
-        class="flex flex-wrap items-center justify-between gap-3 border-t border-border px-6 py-4"
-      >
-        <div class="flex items-center gap-3">
-          <span class="text-xs text-muted-foreground">
-            {{ t('admin.common.pageInfo', { total: paymentsPagination.total, page: paymentsPagination.page, totalPage: paymentsPagination.total_page }) }}
-          </span>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-2">
-            <Input
-              v-model="paymentsJumpPage"
-              type="number"
-              min="1"
-              :max="paymentsPagination.total_page"
-              class="h-8 w-20"
-              :placeholder="t('admin.common.jumpPlaceholder')"
-            />
-            <Button variant="outline" size="sm" class="h-8" @click="jumpPaymentsPage">
-              {{ t('admin.common.jumpTo') }}
-            </Button>
-          </div>
-          <div class="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              class="h-8"
-              :disabled="paymentsPagination.page <= 1"
-              @click="fetchPayments(paymentsPagination.page - 1)"
-            >
-              {{ t('admin.common.prevPage') }}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              class="h-8"
-              :disabled="paymentsPagination.page >= paymentsPagination.total_page"
-              @click="fetchPayments(paymentsPagination.page + 1)"
-            >
-              {{ t('admin.common.nextPage') }}
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ListPagination
+        :page="paymentsPagination.page"
+        :total-page="paymentsPagination.total_page"
+        :total="paymentsPagination.total"
+        :page-size="paymentsPagination.page_size"
+        :page-size-options="pageSizeOptions"
+        @change-page="changePaymentsPage"
+        @change-page-size="changePaymentsPageSize"
+      />
     </div>
 
     <div v-if="activeTab === 'coupons'" class="rounded-xl border border-border bg-card overflow-x-auto">
@@ -827,51 +762,15 @@ watch(
           </TableRow>
         </TableBody>
       </Table>
-      <div
-        v-if="couponsPagination.total_page > 1"
-        class="flex flex-wrap items-center justify-between gap-3 border-t border-border px-6 py-4"
-      >
-        <div class="flex items-center gap-3">
-          <span class="text-xs text-muted-foreground">
-            {{ t('admin.common.pageInfo', { total: couponsPagination.total, page: couponsPagination.page, totalPage: couponsPagination.total_page }) }}
-          </span>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-2">
-            <Input
-              v-model="couponsJumpPage"
-              type="number"
-              min="1"
-              :max="couponsPagination.total_page"
-              class="h-8 w-20"
-              :placeholder="t('admin.common.jumpPlaceholder')"
-            />
-            <Button variant="outline" size="sm" class="h-8" @click="jumpCouponsPage">
-              {{ t('admin.common.jumpTo') }}
-            </Button>
-          </div>
-          <div class="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              class="h-8"
-              :disabled="couponsPagination.page <= 1"
-              @click="fetchCoupons(couponsPagination.page - 1)"
-            >
-              {{ t('admin.common.prevPage') }}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              class="h-8"
-              :disabled="couponsPagination.page >= couponsPagination.total_page"
-              @click="fetchCoupons(couponsPagination.page + 1)"
-            >
-              {{ t('admin.common.nextPage') }}
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ListPagination
+        :page="couponsPagination.page"
+        :total-page="couponsPagination.total_page"
+        :total="couponsPagination.total"
+        :page-size="couponsPagination.page_size"
+        :page-size-options="pageSizeOptions"
+        @change-page="changeCouponsPage"
+        @change-page-size="changeCouponsPageSize"
+      />
     </div>
 
     <div v-if="activeTab === 'wallet'" class="space-y-4">
@@ -962,49 +861,15 @@ watch(
             </TableRow>
           </TableBody>
         </Table>
-        <div
-          v-if="walletPagination.total_page > 1"
-          class="flex flex-wrap items-center justify-between gap-3 border-t border-border px-6 py-4"
-        >
-          <span class="text-xs text-muted-foreground">
-            {{ t('admin.common.pageInfo', { total: walletPagination.total, page: walletPagination.page, totalPage: walletPagination.total_page }) }}
-          </span>
-          <div class="flex flex-wrap items-center gap-2">
-            <div class="flex items-center gap-2">
-              <Input
-                v-model="walletJumpPage"
-                type="number"
-                min="1"
-                :max="walletPagination.total_page"
-                class="h-8 w-20"
-                :placeholder="t('admin.common.jumpPlaceholder')"
-              />
-              <Button variant="outline" size="sm" class="h-8" @click="jumpWalletPage">
-                {{ t('admin.common.jumpTo') }}
-              </Button>
-            </div>
-            <div class="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                class="h-8"
-                :disabled="walletPagination.page <= 1"
-                @click="fetchWalletTransactions(walletPagination.page - 1)"
-              >
-                {{ t('admin.common.prevPage') }}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                class="h-8"
-                :disabled="walletPagination.page >= walletPagination.total_page"
-                @click="fetchWalletTransactions(walletPagination.page + 1)"
-              >
-                {{ t('admin.common.nextPage') }}
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ListPagination
+          :page="walletPagination.page"
+          :total-page="walletPagination.total_page"
+          :total="walletPagination.total"
+          :page-size="walletPagination.page_size"
+          :page-size-options="pageSizeOptions"
+          @change-page="changeWalletPage"
+          @change-page-size="changeWalletPageSize"
+        />
       </div>
     </div>
   </div>
