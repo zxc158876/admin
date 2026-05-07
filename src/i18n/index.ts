@@ -1509,6 +1509,7 @@ const messages = {
           name: '名称',
           slug: 'Slug',
           sort: '排序',
+          status: '状态',
           action: '操作',
           parentPrefix: '父分类：{name}',
         },
@@ -1516,6 +1517,14 @@ const messages = {
         level: {
           root: '一级',
           child: '二级',
+        },
+        status: {
+          active: '已启用',
+          inactive: '已停用',
+          clickToDeactivate: '点击停用',
+          clickToActivate: '点击启用',
+          activatedTip: '分类已启用，前台已恢复显示',
+          deactivatedTip: '分类已停用，前台不再显示',
         },
         actions: {
           edit: '编辑',
@@ -1549,6 +1558,7 @@ const messages = {
         errors: {
           operationFailed: '操作失败：{message}',
           deleteFailed: '删除失败：{message}',
+          toggleFailed: '切换状态失败：{message}',
         },
       },
       banners: {
@@ -4799,6 +4809,7 @@ const messages = {
           name: '名稱',
           slug: 'Slug',
           sort: '排序',
+          status: '狀態',
           action: '操作',
           parentPrefix: '父分類：{name}',
         },
@@ -4806,6 +4817,14 @@ const messages = {
         level: {
           root: '一級',
           child: '二級',
+        },
+        status: {
+          active: '已啟用',
+          inactive: '已停用',
+          clickToDeactivate: '點擊停用',
+          clickToActivate: '點擊啟用',
+          activatedTip: '分類已啟用，前台恢復顯示',
+          deactivatedTip: '分類已停用，前台不再顯示',
         },
         actions: {
           edit: '編輯',
@@ -4839,6 +4858,7 @@ const messages = {
         errors: {
           operationFailed: '操作失敗：{message}',
           deleteFailed: '刪除失敗：{message}',
+          toggleFailed: '切換狀態失敗：{message}',
         },
       },
       banners: {
@@ -8089,6 +8109,7 @@ const messages = {
           name: 'Name',
           slug: 'Slug',
           sort: 'Sort',
+          status: 'Status',
           action: 'Actions',
           parentPrefix: 'Parent: {name}',
         },
@@ -8096,6 +8117,14 @@ const messages = {
         level: {
           root: 'Level 1',
           child: 'Level 2',
+        },
+        status: {
+          active: 'Active',
+          inactive: 'Inactive',
+          clickToDeactivate: 'Click to deactivate',
+          clickToActivate: 'Click to activate',
+          activatedTip: 'Category activated and visible on the storefront',
+          deactivatedTip: 'Category deactivated and hidden from the storefront',
         },
         actions: {
           edit: 'Edit',
@@ -8129,6 +8158,7 @@ const messages = {
         errors: {
           operationFailed: 'Operation failed: {message}',
           deleteFailed: 'Delete failed: {message}',
+          toggleFailed: 'Toggle status failed: {message}',
         },
       },
       banners: {

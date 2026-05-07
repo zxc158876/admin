@@ -21,6 +21,7 @@ export interface AdminCategory {
   name: LocalizedText
   icon: string
   sort_order: number
+  is_active: boolean
   created_at: string
 }
 

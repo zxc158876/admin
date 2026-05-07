@@ -309,6 +309,7 @@ export const adminAPI = {
   getCategories: (params?: Record<string, unknown>) => api.get('/admin/categories', { params }),
   createCategory: (data: Partial<AdminCategory>) => api.post('/admin/categories', data),
   updateCategory: (id: number, data: Partial<AdminCategory>) => api.put(`/admin/categories/${id}`, data),
+  patchCategoryActive: (id: number, isActive: boolean) => api.patch(`/admin/categories/${id}/active`, { is_active: isActive }),
   deleteCategory: (id: number) => api.delete(`/admin/categories/${id}`),
   getPosts: (params?: Record<string, unknown>) => api.get('/admin/posts', { params }),
   getPost: (id: number) => api.get(`/admin/posts/${id}`),
