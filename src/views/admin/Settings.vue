@@ -263,6 +263,10 @@ const telegramForm = reactive({
   mini_app_url: '',
   login_expire_seconds: 300,
   replay_ttl_seconds: 300,
+  client_secret: '',
+  has_client_secret: false,
+  oidc_redirect_uri: '',
+  mode: '' as string,
 })
 
 const createOrderEmailLocalizedTemplate = () => ({ subject: '', body: '' })
@@ -476,6 +480,10 @@ const fetchSettings = async () => {
       telegramForm.mini_app_url = String(telegram.mini_app_url || '')
       telegramForm.login_expire_seconds = normalizeNumber(telegram.login_expire_seconds, 300)
       telegramForm.replay_ttl_seconds = normalizeNumber(telegram.replay_ttl_seconds, 300)
+      telegramForm.client_secret = ''
+      telegramForm.has_client_secret = !!telegram.has_client_secret
+      telegramForm.oidc_redirect_uri = String(telegram.oidc_redirect_uri || '')
+      telegramForm.mode = String(telegram.mode || '')
     }
 
     if (dashboardRes.data && dashboardRes.data.data) {
@@ -624,15 +632,23 @@ const saveTelegramAuthSettings = async () => {
     mini_app_url: telegramForm.mini_app_url,
     login_expire_seconds: Number(telegramForm.login_expire_seconds),
     replay_ttl_seconds: Number(telegramForm.replay_ttl_seconds),
+    oidc_redirect_uri: telegramForm.oidc_redirect_uri.trim(),
   }
   if (telegramForm.bot_token.trim() !== '') {
     payload.bot_token = telegramForm.bot_token.trim()
+  }
+  if (telegramForm.client_secret.trim() !== '') {
+    payload.client_secret = telegramForm.client_secret.trim()
   }
 
   const res = await adminAPI.updateTelegramAuthSettings(payload)
   const data = res.data?.data as Record<string, unknown> | undefined
   telegramForm.bot_token = ''
   telegramForm.has_bot_token = !!data?.has_bot_token || telegramForm.has_bot_token
+  telegramForm.client_secret = ''
+  telegramForm.has_client_secret = !!data?.has_client_secret || telegramForm.has_client_secret
+  telegramForm.mode = String(data?.mode || telegramForm.mode)
+  telegramForm.oidc_redirect_uri = String(data?.oidc_redirect_uri ?? telegramForm.oidc_redirect_uri)
 }
 
 
@@ -1202,6 +1218,26 @@ onMounted(() => {
               <Input v-model="telegramForm.bot_token" type="password" :placeholder="t('admin.settings.telegram.botTokenPlaceholder')" />
               <p class="text-xs text-muted-foreground">
                 {{ telegramForm.has_bot_token ? t('admin.settings.telegram.botTokenHintKeep') : t('admin.settings.telegram.botTokenHintEmpty') }}
+              </p>
+            </div>
+            <div class="space-y-2 md:col-span-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.modeLabel') }}</label>
+              <p class="text-sm font-medium">
+                {{ telegramForm.mode === 'oidc' ? t('admin.settings.telegram.modeOidc') : (telegramForm.mode === 'widget' ? t('admin.settings.telegram.modeWidget') : t('admin.settings.telegram.modeDisabled')) }}
+              </p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.clientSecret') }}</label>
+              <Input v-model="telegramForm.client_secret" type="password" :placeholder="t('admin.settings.telegram.clientSecretPlaceholder')" />
+              <p class="text-xs text-muted-foreground">
+                {{ telegramForm.has_client_secret ? t('admin.settings.telegram.clientSecretHintKeep') : t('admin.settings.telegram.clientSecretHintEmpty') }}
+              </p>
+            </div>
+            <div class="space-y-2">
+              <label class="text-xs font-medium text-muted-foreground">{{ t('admin.settings.telegram.oidcRedirectURI') }}</label>
+              <Input v-model="telegramForm.oidc_redirect_uri" :placeholder="t('admin.settings.telegram.oidcRedirectURIPlaceholder')" />
+              <p class="text-xs text-muted-foreground">
+                {{ t('admin.settings.telegram.oidcRedirectURIHint') }}
               </p>
             </div>
             <div class="space-y-2 md:col-span-2">
